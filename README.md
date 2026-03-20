@@ -1,2 +1,2 @@
 # festa-com-ia-dockercompose
-docker compose da infra da aplicacao para rodar na VPS.
+docker compose da infra da aplicacao para rodar na VPS com Portainer, Traefik e outras ferramentas.
