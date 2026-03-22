@@ -6,20 +6,15 @@ services:
     environment:
       - NODE_ENV=production
     networks:
-      - traefik-public
+      - web
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.festa-com-ia.rule=Host(`festacomia.elizax.cloud`)"
       - "traefik.http.routers.festa-com-ia.entrypoints=websecure"
       - "traefik.http.routers.festa-com-ia.tls=true"
-      - "traefik.http.routers.festa-com-ia.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.festa-com-ia.tls.certresolver=lets-encrypt"
       - "traefik.http.services.festa-com-ia.loadbalancer.server.port=3000"
-      # Redirect HTTP → HTTPS
-      - "traefik.http.routers.festa-com-ia-http.rule=Host(`festacomia.elizax.cloud`)"
-      - "traefik.http.routers.festa-com-ia-http.entrypoints=web"
-      - "traefik.http.routers.festa-com-ia-http.middlewares=redirect-to-https"
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
 
 networks:
-  traefik-public:
+  web:
     external: true
