@@ -1,0 +1,25 @@
+services:
+  web:
+    image: wallesonnn/festa-com-ia:${IMAGE_TAG:-latest}
+    container_name: festa-com-ia
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    networks:
+      - traefik-public
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.festa-com-ia.rule=Host(`festacomia.elizax.cloud`)"
+      - "traefik.http.routers.festa-com-ia.entrypoints=websecure"
+      - "traefik.http.routers.festa-com-ia.tls=true"
+      - "traefik.http.routers.festa-com-ia.tls.certresolver=letsencrypt"
+      - "traefik.http.services.festa-com-ia.loadbalancer.server.port=3000"
+      # Redirect HTTP → HTTPS
+      - "traefik.http.routers.festa-com-ia-http.rule=Host(`festacomia.elizax.cloud`)"
+      - "traefik.http.routers.festa-com-ia-http.entrypoints=web"
+      - "traefik.http.routers.festa-com-ia-http.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+
+networks:
+  traefik-public:
+    external: true
