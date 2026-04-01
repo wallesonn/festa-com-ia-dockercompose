@@ -1,12 +1,18 @@
 services:
+
   web:
     image: wallesonnn/festa-com-ia:${IMAGE_TAG:-latest}
     container_name: festa-com-ia
     restart: unless-stopped
     environment:
       - NODE_ENV=production
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-festacomia}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-festacomia}
     networks:
       - web
+      - internal
+    depends_on:
+      - postgres
+      - redis
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.festa-com-ia.rule=Host(`festacomia.elizax.cloud`)"
@@ -15,6 +21,50 @@ services:
       - "traefik.http.routers.festa-com-ia.tls.certresolver=lets-encrypt"
       - "traefik.http.services.festa-com-ia.loadbalancer.server.port=3000"
 
+  postgres:
+    image: postgres:17-alpine
+    container_name: festa-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-festacomia}
+      POSTGRES_USER: ${POSTGRES_USER:-festacomia}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ../supabase/migrations/20260331_initial_schema.sql:/docker-entrypoint-initdb.d/01_initial_schema.sql:ro
+    ports:
+      - "127.0.0.1:5432:5432"
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-festacomia}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: festa-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:?REDIS_PASSWORD is required}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "127.0.0.1:6379:6379"
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  redis_data:
+
 networks:
   web:
     external: true
+  internal:
+    driver: bridge
