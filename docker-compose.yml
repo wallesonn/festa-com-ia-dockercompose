@@ -34,7 +34,7 @@ services:
       - ../supabase/migrations/20260331_initial_schema.sql:/docker-entrypoint-initdb.d/01_initial_schema.sql:ro
     networks:
       internal: {}
-      shared:
+      web:
         aliases:
           - festa-postgres
     healthcheck:
@@ -69,5 +69,3 @@ networks:
     external: true
   internal:
     driver: bridge
-  shared:
-    external: true
