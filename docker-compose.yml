@@ -33,7 +33,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ../supabase/migrations/20260331_initial_schema.sql:/docker-entrypoint-initdb.d/01_initial_schema.sql:ro
     ports:
-      - "127.0.0.1:5432:5432"
+      - "127.0.0.1:5433:5432"
     networks:
       - internal
     healthcheck:
