@@ -31,7 +31,6 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ../supabase/migrations/20260331_initial_schema.sql:/docker-entrypoint-initdb.d/01_initial_schema.sql:ro
     networks:
       internal: {}
       web:
