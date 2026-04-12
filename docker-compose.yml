@@ -7,6 +7,7 @@ services:
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://${POSTGRES_USER:-festacomia}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-festacomia}
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-https://${APP_DOMAIN:-festacomia.pro}}
     networks:
       - web
       - internal
@@ -15,7 +16,7 @@ services:
       - redis
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.festa-com-ia.rule=Host(`festacomia.elizax.cloud`)"
+      - "traefik.http.routers.festa-com-ia.rule=Host(`${APP_DOMAIN:-festacomia.pro}`)"
       - "traefik.http.routers.festa-com-ia.entrypoints=websecure"
       - "traefik.http.routers.festa-com-ia.tls=true"
       - "traefik.http.routers.festa-com-ia.tls.certresolver=lets-encrypt"
