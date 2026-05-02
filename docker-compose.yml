@@ -9,6 +9,9 @@ services:
       - DATABASE_URL=postgresql://${POSTGRES_USER:-festacomia}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-festacomia}
       - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-https://${APP_DOMAIN:-festacomia.pro}}
       - N8N_WEBHOOK_URL=${N8N_WEBHOOK_URL:-}
+      - UAZAPI_BASE_URL=${UAZAPI_BASE_URL:?UAZAPI_BASE_URL is required}
+      - UAZAPI_ADMIN_TOKEN=${UAZAPI_ADMIN_TOKEN:?UAZAPI_ADMIN_TOKEN is required}
+      - UAZAPI_SYSTEM_NAME=${UAZAPI_SYSTEM_NAME:-festa-com-ia}
       - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY:?SUPABASE_SERVICE_ROLE_KEY is required}
     networks:
       - web
